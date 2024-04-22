@@ -1,8 +1,9 @@
 //global variables//
 
-//profile info//
+
 const overview = document.querySelector(".overview")
 const username = "djzsmk"
+const repoList = document.querySelector(".repo-list")
 
 //api json data//
 
@@ -11,10 +12,11 @@ const getData = async function () {
         `https://api.github.com/users/${username}`
     )
     const data = await res.json()
-    console.log(data)
+    //console.log(data)
     userData(data)
 }
 getData()
+
 
 const userData = function (data) {
     const div = document.createElement("div")
@@ -29,5 +31,26 @@ const userData = function (data) {
             <p><strong>Location:</strong> ${data.location}</P>
             <p><strong>Number of public repos:</strong> ${data.public_repos}</p>
         </div>`
-    overview.append(div)   
+    overview.append(div)
+    repoData()
+}
+
+//repo data//
+const repoData = async function () {
+    const fetchRepos = await fetch(
+       `https://api.github.com/users/${username}/repos?sort=updated&per_page=100`
+        );
+    const repoThings = await fetchRepos.json();
+    //console.log(repoThings)
+    repoDisplay(repoThings)
+    
+}
+
+const repoDisplay = function (repos) {
+    for (const repo of repos) {
+        const repoItem = document.createElement("li")
+        repoItem.classList.add("repo")
+        repoItem.innerHTML = `<h3>${repo.name}</h3>`
+        repoList.append(repoItem)
+    }
 }
