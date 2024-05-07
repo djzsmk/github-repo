@@ -4,8 +4,10 @@
 const overview = document.querySelector(".overview")
 const username = "djzsmk"
 const repoList = document.querySelector(".repo-list")
-const repoInfo = document.querySelector(".repo")
+const repoContainer = document.querySelector(".repos")
 const repoStats = document.querySelector(".repo-data")
+const goBackButton = document.querySelector(".view-repos")
+const filterInput = document.querySelector(".filter-repos ")
 
 //api json data//
 
@@ -39,6 +41,7 @@ const userData = function (data) {
 
 //repo data//
 const repoData = async function () {
+    filterInput.classList.remove("hide")
     const fetchRepos = await fetch(
        `https://api.github.com/users/${username}/repos?sort=updated&per_page=100`
         );
@@ -54,6 +57,7 @@ const repoDisplay = function (repos) {
         repoItem.classList.add("repo")
         repoItem.innerHTML = `<h3>${repo.name}</h3>`
         repoList.append(repoItem)
+        goBackButton.classList.remove("hide")
     }
 }
 
@@ -82,10 +86,10 @@ const getRepoInfo = async function (repoName) {
 }
 
 const specRepoInfo = function (repoInfo, languages) {
-    repoData.innerHTML = "";
+    repoStats.innerHTML = "";
     const div = document.createElement("div")
-    repoData.classList.remove("hide")
-    repoInfo.classList.add("hide")
+    repoStats.classList.remove("hide")
+    repoContainer.classList.add("hide")
     div.innerHTML = `
     <h3>Name: ${repoInfo.name}</h3>
         <p>Description: ${repoInfo.description}</P>
@@ -93,5 +97,27 @@ const specRepoInfo = function (repoInfo, languages) {
         <P>Languages: ${languages.join(", ")}</P>
         <a class="visit" href="${repoInfo.html_url}" target="_blank" rel="noreferrer noopener">View Repo on Github!</a>
         `;
-        repoData.append(div);
+        repoStats.append(div);
+
+        goBackButton.addEventListener("click", function(e) {
+            repoContainer.classList.remove("hide")
+            repoStats.classList.add("hide")
+            goBackButton.classList.add("hide")
+        })
 } 
+
+filterInput.addEventListener("input", function (e) {
+    const searchText = e.target.value
+    console.log(searchText)
+    const repos = document.querySelectorAll(".repo")
+    const textLowerCase = searchText.toLowerCase()
+
+    for (const repo of repos) {
+        const repoLowText = repo.innerText.toLowerCase()
+       if (repoLowText.includes(textLowerCase)) {
+            repo.classList.remove("hide")
+        } else {
+           repo.classList.add("hide")
+        }
+   }
+})
