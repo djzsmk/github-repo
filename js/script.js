@@ -57,7 +57,7 @@ const repoDisplay = function (repos) {
         repoItem.classList.add("repo")
         repoItem.innerHTML = `<h3>${repo.name}</h3>`
         repoList.append(repoItem)
-        goBackButton.classList.remove("hide")
+        
     }
 }
 
@@ -73,10 +73,10 @@ const getRepoInfo = async function (repoName) {
         `https://api.github.com/repos/${username}/${repoName}`
     )
     const repoInfo = await fetchInfo.json()
-    //console.log(repoInfo)
+    
     const fetchLanguages = await fetch(repoInfo.languages_url)
     const languageData = await fetchLanguages.json()
-    console.log(languageData)
+    
 
     const languages = []
     for( const language in languageData) {
@@ -86,6 +86,7 @@ const getRepoInfo = async function (repoName) {
 }
 
 const specRepoInfo = function (repoInfo, languages) {
+    goBackButton.classList.remove("hide")
     repoStats.innerHTML = "";
     const div = document.createElement("div")
     repoStats.classList.remove("hide")
@@ -117,7 +118,7 @@ filterInput.addEventListener("input", function (e) {
        if (repoLowText.includes(textLowerCase)) {
             repo.classList.remove("hide")
         } else {
-           repo.classList.add("hide")
+           repo.classList.remove("hide")
         }
    }
 })
